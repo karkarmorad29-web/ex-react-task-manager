@@ -1,4 +1,5 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useContext } from 'react';
+import { GlobalContext } from './GlobalContext.jsx';
 
 const symbols = "!@#$%^&*()-_=+[]{}|;:'\\\",.<>?/`~";
 
@@ -29,24 +30,29 @@ const AddTask = () => {
         return true;
     };
 
-    const handleSubmit = (e) => {
+    const { addTask } = useContext(GlobalContext);
+
+    const handleSubmit = async (e) => {
         e.preventDefault();
         if (!validate()) return;
 
-        const task = {
+        const payload = {
             title: title.trim(),
             description: descriptionRef.current ? descriptionRef.current.value : '',
             status: statusRef.current ? statusRef.current.value : 'To do',
-            createdAt: new Date().toISOString(),
         };
 
-        console.log('New task (client-side):', task);
-        // non inviare ancora all'API
+        try {
+            await addTask(payload);
+            alert('Task creata con successo.');
 
-        // reset form
-        setTitle('');
-        if (descriptionRef.current) descriptionRef.current.value = '';
-        if (statusRef.current) statusRef.current.value = 'To do';
+            // reset form
+            setTitle('');
+            if (descriptionRef.current) descriptionRef.current.value = '';
+            if (statusRef.current) statusRef.current.value = 'To do';
+        } catch (err) {
+            alert(err.message || 'Errore nella creazione del task.');
+        }
     };
 
     return (

@@ -2,10 +2,9 @@ import { useState, useEffect } from 'react';
 
 export const useTasks = () => {
     const [tasks, setTasks] = useState([]);
+    const apiUrl = import.meta.env.VITE_API_URL || '/tasks';
 
     useEffect(() => {
-        const apiUrl = import.meta.env.VITE_API_URL || '/tasks';
-
         const loadTasks = async () => {
             try {
                 const response = await fetch(apiUrl);
@@ -21,10 +20,27 @@ export const useTasks = () => {
         };
 
         loadTasks();
-    }, []);
+    }, [apiUrl]);
 
-    const addTask = (task) => {
-        // TODO: Implementare aggiunta task
+    const addTask = async ({ title, description, status }) => {
+        const payload = { title, description, status };
+
+        const resp = await fetch(apiUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload),
+        });
+
+        const data = await resp.json();
+
+        if (!data || data.success === false) {
+            const msg = data && data.message ? data.message : 'Errore durante la creazione del task.';
+            throw new Error(msg);
+        }
+
+        const createdTask = data.task;
+        setTasks((prev) => [...prev, createdTask]);
+        return createdTask;
     };
 
     const removeTask = (taskId) => {
