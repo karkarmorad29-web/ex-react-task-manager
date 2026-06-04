@@ -133,3 +133,76 @@ code {
 .main-nav a[aria-current="page"] {
   color: var(--accent);
 }
+
+.task-list-container {
+  padding: 32px 16px;
+  max-width: 1000px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.task-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 24px;
+  box-shadow: var(--shadow);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.task-table thead {
+  background: var(--accent-bg);
+  border-bottom: 2px solid var(--accent-border);
+}
+
+.task-table th {
+  padding: 16px;
+  text-align: left;
+  font-weight: 600;
+  color: var(--text-h);
+  font-size: 16px;
+}
+
+.task-table td {
+  padding: 16px;
+  border-bottom: 1px solid var(--border);
+  color: var(--text);
+}
+
+.task-table tbody tr:hover {
+  background: var(--accent-bg);
+}
+
+.status-badge {
+  display: inline-block;
+  padding: 6px 12px;
+  border-radius: 4px;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.status-todo {
+  background: #fee;
+  color: #c00;
+}
+
+.status-doing {
+  background: #ffe;
+  color: #880;
+}
+
+.status-done {
+  background: #efe;
+  color: #080;
+}
+
+@media (max-width: 1024px) {
+  .task-table {
+    font-size: 14px;
+  }
+
+  .task-table th,
+  .task-table td {
+    padding: 12px;
+  }
+}

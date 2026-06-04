@@ -1,8 +1,9 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Navbar from './Navbar.jsx';
+import TaskList from './TaskList.jsx';
 import { GlobalProvider } from './GlobalContext.jsx';
 
-const Home = () => <main><h1>Home</h1></main>;
+const Home = () => <TaskList />;
 const About = () => <main><h1>About</h1><p>Info sulla tua app.</p></main>;
 const Products = () => <main><h1>Products</h1><p>Elenco dei prodotti o funzionalità.</p></main>;
 
