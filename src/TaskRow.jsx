@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 const TaskRow = ({ task }) => {
     const getStatusClass = (status) => {
@@ -21,7 +22,7 @@ const TaskRow = ({ task }) => {
 
     return (
         <tr>
-            <td>{task.title}</td>
+            <td><Link to={`/task/${task.id}`}>{task.title}</Link></td>
             <td>
                 <span className={`status-badge ${getStatusClass(task.status)}`}>
                     {task.status}

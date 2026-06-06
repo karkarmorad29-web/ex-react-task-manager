@@ -206,3 +206,161 @@ code {
     padding: 12px;
   }
 }
+
+/* AddTask and TaskDetail styles */
+.add-task-container,
+.task-detail-container {
+  padding: 24px;
+  max-width: 900px;
+  margin: 0 auto;
+  text-align: left;
+}
+
+.add-task-container form>div,
+.task-detail-container>p {
+  margin-bottom: 12px;
+}
+
+.add-task-container label {
+  display: block;
+  margin-bottom: 6px;
+  font-weight: 600;
+}
+
+.add-task-container input,
+.add-task-container textarea,
+.add-task-container select {
+  width: 100%;
+  padding: 8px 10px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  box-sizing: border-box;
+}
+
+.task-detail-actions {
+  margin-top: 16px;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 42px;
+  padding: 0 16px;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+  transition: transform 0.15s ease, background-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.btn:hover {
+  transform: translateY(-1px);
+}
+
+.btn-primary {
+  background: var(--accent);
+  color: #fff;
+}
+
+.btn-primary:hover {
+  background: #8b2edc;
+}
+
+.btn-danger {
+  background: #c00;
+  color: #fff;
+}
+
+.btn-danger:hover {
+  background: #a40000;
+}
+
+.btn-secondary {
+  background: transparent;
+  color: var(--text-h);
+  border: 1px solid var(--border);
+}
+
+.btn-secondary:hover {
+  background: rgba(0, 0, 0, 0.04);
+}
+
+/* Modal styles */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal {
+  background: var(--bg);
+  color: var(--text);
+  padding: 20px;
+  border-radius: 10px;
+  max-width: 520px;
+  width: 100%;
+  box-shadow: var(--shadow);
+}
+
+.modal-title {
+  margin: 0 0 12px 0;
+  color: var(--text-h);
+}
+
+.modal-content {
+  margin-bottom: 16px;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.edit-task-form {
+  display: grid;
+  gap: 18px;
+}
+
+.edit-task-form div {
+  display: grid;
+  gap: 8px;
+}
+
+.edit-task-form label {
+  text-align: left;
+  font-weight: 600;
+  color: var(--text-h);
+}
+
+.edit-task-form input,
+.edit-task-form textarea,
+.edit-task-form select {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--bg);
+  color: var(--text);
+  font: inherit;
+  box-sizing: border-box;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.edit-task-form textarea {
+  min-height: 120px;
+  resize: vertical;
+}
+
+.edit-task-form input:focus,
+.edit-task-form textarea:focus,
+.edit-task-form select:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 4px rgba(170, 59, 255, 0.12);
+}

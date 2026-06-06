@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 
 export const useTasks = () => {
     const [tasks, setTasks] = useState([]);
-    const apiUrl = import.meta.env.VITE_API_URL || '/tasks';
+    const apiUrl = import.meta.env.VITE_API_URL || '/api/tasks';
 
     useEffect(() => {
         const loadTasks = async () => {
@@ -43,12 +43,45 @@ export const useTasks = () => {
         return createdTask;
     };
 
-    const removeTask = (taskId) => {
-        // TODO: Implementare rimozione task
+    const removeTask = async (taskId) => {
+        const resp = await fetch(`${apiUrl}/${taskId}`, {
+            method: 'DELETE',
+        });
+
+        const data = await resp.json();
+
+        if (!data || data.success === false) {
+            const msg = data && data.message ? data.message : 'Errore durante l\'eliminazione del task.';
+            throw new Error(msg);
+        }
+
+        // success
+        setTasks((prev) => prev.filter((t) => t.id !== taskId));
+        return true;
     };
 
-    const updateTask = (taskId, updatedTask) => {
-        // TODO: Implementare aggiornamento task
+    const updateTask = async (updatedTask) => {
+        // updatedTask must contain an `id` property
+        if (!updatedTask || typeof updatedTask.id === 'undefined') {
+            throw new Error('updatedTask deve contenere l\'id');
+        }
+
+        const resp = await fetch(`${apiUrl}/${updatedTask.id}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(updatedTask),
+        });
+
+        const data = await resp.json();
+
+        if (!data || data.success === false) {
+            const msg = data && data.message ? data.message : 'Errore durante l\'aggiornamento del task.';
+            throw new Error(msg);
+        }
+
+        const serverTask = data.task;
+        setTasks((prev) => prev.map((t) => (t.id === serverTask.id ? serverTask : t)));
+        return serverTask;
     };
 
     return {

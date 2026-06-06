@@ -1,6 +1,8 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Navbar from './Navbar.jsx';
 import TaskList from './TaskList.jsx';
+import TaskDetail from './TaskDetail.jsx';
+import TaskRedirect from './TaskRedirect.jsx';
 import { GlobalProvider } from './GlobalContext.jsx';
 
 const Home = () => <TaskList />;
@@ -16,6 +18,8 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/about" element={<About />} />
           <Route path="/products" element={<Products />} />
+          <Route path="/task/:id" element={<TaskDetail />} />
+          <Route path="/tasks/:id" element={<TaskRedirect />} />
         </Routes>
       </BrowserRouter>
     </GlobalProvider>
