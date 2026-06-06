@@ -1,5 +1,6 @@
 import React, { useContext, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import dayjs from 'dayjs';
 import { GlobalContext } from './GlobalContext.jsx';
 import Modal from './Modal.jsx';
 import EditTaskModal from './EditTaskModal.jsx';
@@ -59,7 +60,7 @@ const TaskDetail = () => {
             <h1>{task.title}</h1>
             <p><strong>Stato:</strong> {task.status}</p>
             <p><strong>Descrizione:</strong> {task.description}</p>
-            <p><strong>Creato il:</strong> {new Date(task.createdAt).toLocaleString('it-IT')}</p>
+            <p><strong>Creato il:</strong> {dayjs(task.createdAt).format('DD/MM/YYYY')}</p>
             <div className="task-detail-actions">
                 <button onClick={handleEdit} className="btn">Modifica Task</button>
                 <button onClick={handleDelete} className="btn btn-danger">Elimina Task</button>

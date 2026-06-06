@@ -3,11 +3,11 @@ import Navbar from './Navbar.jsx';
 import TaskList from './TaskList.jsx';
 import TaskDetail from './TaskDetail.jsx';
 import TaskRedirect from './TaskRedirect.jsx';
+import About from './About.jsx';
+import Features from './Features.jsx';
 import { GlobalProvider } from './GlobalContext.jsx';
 
 const Home = () => <TaskList />;
-const About = () => <main><h1>About</h1><p>Info sulla tua app.</p></main>;
-const Products = () => <main><h1>Products</h1><p>Elenco dei prodotti o funzionalità.</p></main>;
 
 function App() {
   return (
@@ -17,7 +17,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/about" element={<About />} />
-          <Route path="/products" element={<Products />} />
+          <Route path="/features" element={<Features />} />
           <Route path="/task/:id" element={<TaskDetail />} />
           <Route path="/tasks/:id" element={<TaskRedirect />} />
         </Routes>

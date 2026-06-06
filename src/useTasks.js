@@ -1,7 +1,8 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useReducer } from 'react';
+import { tasksReducer } from './tasksReducer.js';
 
 export const useTasks = () => {
-    const [tasks, setTasks] = useState([]);
+    const [tasks, dispatch] = useReducer(tasksReducer, []);
     const apiUrl = import.meta.env.VITE_API_URL || '/api/tasks';
 
     useEffect(() => {
@@ -13,7 +14,7 @@ export const useTasks = () => {
                 }
                 const data = await response.json();
                 console.log('Tasks received from API:', data);
-                setTasks(data);
+                dispatch({ type: 'LOAD_TASKS', payload: data });
             } catch (error) {
                 console.error('Errore nel recupero dei task:', error);
             }
@@ -23,6 +24,11 @@ export const useTasks = () => {
     }, [apiUrl]);
 
     const addTask = async ({ title, description, status }) => {
+        const normalizedTitle = title.trim().toLowerCase();
+        if (tasks.some((task) => task.title.trim().toLowerCase() === normalizedTitle)) {
+            throw new Error('Esiste già un task con questo nome.');
+        }
+
         const payload = { title, description, status };
 
         const resp = await fetch(apiUrl, {
@@ -39,7 +45,7 @@ export const useTasks = () => {
         }
 
         const createdTask = data.task;
-        setTasks((prev) => [...prev, createdTask]);
+        dispatch({ type: 'ADD_TASK', payload: createdTask });
         return createdTask;
     };
 
@@ -55,8 +61,57 @@ export const useTasks = () => {
             throw new Error(msg);
         }
 
-        // success
-        setTasks((prev) => prev.filter((t) => t.id !== taskId));
+        dispatch({ type: 'REMOVE_TASK', payload: taskId });
+        return true;
+    };
+
+    const removeMultipleTasks = async (taskIds) => {
+        if (!Array.isArray(taskIds) || taskIds.length === 0) {
+            return true;
+        }
+
+        const results = await Promise.allSettled(
+            taskIds.map(async (taskId) => {
+                try {
+                    const resp = await fetch(`${apiUrl}/${taskId}`, {
+                        method: 'DELETE',
+                    });
+
+                    const data = await resp.json();
+
+                    if (!data || data.success === false) {
+                        throw new Error(data && data.message ? data.message : `Errore nella cancellazione del task ${taskId}`);
+                    }
+
+                    return { taskId, success: true };
+                } catch (error) {
+                    return { taskId, success: false, error: error.message };
+                }
+            })
+        );
+
+        const successIds = results
+            .filter((result) => result.status === 'fulfilled' && result.value.success)
+            .map((result) => result.value.taskId);
+
+        const failedIds = results
+            .filter((result) => result.status === 'fulfilled' && !result.value.success)
+            .map((result) => result.value.taskId)
+            .concat(
+                results
+                    .filter((result) => result.status === 'rejected')
+                    .map((result) => (result.reason && result.reason.taskId ? result.reason.taskId : undefined))
+                    .filter((id) => typeof id !== 'undefined')
+            );
+
+        if (successIds.length > 0) {
+            dispatch({ type: 'REMOVE_MULTIPLE_TASKS', payload: successIds });
+        }
+
+        if (failedIds.length > 0) {
+            throw new Error(`Impossibile eliminare i task con ID: ${failedIds.join(', ')}`);
+        }
+
         return true;
     };
 
@@ -64,6 +119,15 @@ export const useTasks = () => {
         // updatedTask must contain an `id` property
         if (!updatedTask || typeof updatedTask.id === 'undefined') {
             throw new Error('updatedTask deve contenere l\'id');
+        }
+
+        const normalizedTitle = updatedTask.title.trim().toLowerCase();
+        if (
+            tasks.some(
+                (task) => task.id !== updatedTask.id && task.title.trim().toLowerCase() === normalizedTitle
+            )
+        ) {
+            throw new Error('Esiste già un task con questo nome.');
         }
 
         const resp = await fetch(`${apiUrl}/${updatedTask.id}`, {
@@ -80,7 +144,7 @@ export const useTasks = () => {
         }
 
         const serverTask = data.task;
-        setTasks((prev) => prev.map((t) => (t.id === serverTask.id ? serverTask : t)));
+        dispatch({ type: 'UPDATE_TASK', payload: serverTask });
         return serverTask;
     };
 
@@ -88,6 +152,7 @@ export const useTasks = () => {
         tasks,
         addTask,
         removeTask,
+        removeMultipleTasks,
         updateTask,
     };
 };
